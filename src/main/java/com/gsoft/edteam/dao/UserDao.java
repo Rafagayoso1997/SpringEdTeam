@@ -19,10 +19,12 @@ public interface UserDao {
 
   User get(long id);
 
-  User register(User user);
+  void register(User user);
 
   User update(User user);
 
   void delete(long id);
+
+  User login(User user);
 
 }

@@ -1,129 +1,74 @@
 package com.gsoft.edteam.models;
 
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 
 @Entity
 @Table(name = "user")
-public class User {
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+public class User extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "user_id", updatable = false, nullable = false)
-  private long id;
+  //Para que solo se pueda leer la propiedad. /**SEGURIDAD**/
+  @JsonProperty(access = Access.READ_ONLY)
+  //Eager para que traiga todo el contenido
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "role_id")
+  @Getter
+  @Setter
+  private Role role;
 
   @Column(name = "name")
+  @Getter
+  @Setter
   private String name;
 
   @Column(name = "lastname")
+  @Getter
+  @Setter
   private String lastName;
 
+  @JsonProperty(access = Access.WRITE_ONLY)
+  @Column(name = "password")
+  @Setter
+  @Getter// Lombok Anotation
+  private String password;
+
   @Column(name = "email")
+  @Getter
+  @Setter
   private String email;
 
   @Column(name = "phone")
+  @Getter
+  @Setter
   private String phone;
 
+  //Para que matchee con la columna de la BD
   @Column(name = "birthdate")
+  @Getter
+  @Setter
   private Date birthDate;
 
-  public User() {
 
-  }
-
-  public User(long id, String name, String lastName, String email, String phone,
-      Date birthDate) {
-    this.id = id;
-    this.name = name;
-    this.lastName = lastName;
-    this.email = email;
-    this.phone = phone;
-    this.birthDate = birthDate;
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  public Date getBirthDate() {
-    return birthDate;
-  }
-
-  public void setBirthDate(Date birthDate) {
-    this.birthDate = birthDate;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    User user = (User) o;
-    return id == user.id && name.equals(user.name) && lastName.equals(user.lastName)
-        && email.equals(
-        user.email) && phone.equals(user.phone) && birthDate.equals(user.birthDate);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name, lastName, email, phone, birthDate);
-  }
-
-
-  @Override
-  public String toString() {
-    return "User{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        ", lastName='" + lastName + '\'' +
-        ", email='" + email + '\'' +
-        ", phone='" + phone + '\'' +
-        ", birthDate=" + birthDate +
-        '}';
-  }
 }

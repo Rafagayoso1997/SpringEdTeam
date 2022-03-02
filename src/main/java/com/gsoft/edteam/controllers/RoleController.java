@@ -1,19 +1,11 @@
 package com.gsoft.edteam.controllers;
 
-import com.gsoft.edteam.email.EmailBody;
 import com.gsoft.edteam.email.EmailPort;
-import com.gsoft.edteam.models.User;
-import com.gsoft.edteam.services.UserService;
-import com.gsoft.edteam.utils.JWTUtil;
-import java.util.HashMap;
+import com.gsoft.edteam.models.Role;
+import com.gsoft.edteam.services.RoleService;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,14 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("user")
-public class UserController {
+@RequestMapping("role")
+public class RoleController {
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
-  private JWTUtil jwtutil;
+  private RoleService roleService;
 
   @Autowired
   private EmailPort emailPort;
@@ -41,39 +30,39 @@ public class UserController {
   // Trae todos los usuarios
   @ResponseStatus(HttpStatus.FOUND)
   @GetMapping("/")
-  List<User> getAll(){
-    return userService.getAll();
+  List<Role> getAll(){
+    return roleService.getAll();
 
   }
   // Trae un usuario por su id
   @ResponseStatus(HttpStatus.FOUND)
   @GetMapping("/{id}")
-  User get(@PathVariable long id) {
+  Role get(@PathVariable long id) {
 
-    return userService.get(id);
+    return roleService.get(id);
   }
 
   // Registrar usuario
   // Trae un usuario por su id
   @ResponseStatus(HttpStatus.FOUND)
   @PostMapping("/")
-  void register(@RequestBody User user) {
+  Role register(@RequestBody Role role) {
     //TODO: registrarlo en la base de datos
     /*EmailBody email = new EmailBody();
-    email.setEmail(user.getEmail());
+    email.setEmail(role.getEmail());
     email.setSubject("Authentication");
     email.setContent("Welcome to REST API");
     emailPort.sendEmail(email);*/
-    userService.register(user);
+    return roleService.register(role);
   }
 
   // Actualizar usuario
   // Trae un usuario por su id
   @ResponseStatus(HttpStatus.FOUND)
   @PutMapping("/{id}")
-  User update(@RequestBody User user) {
+  Role update(@RequestBody Role role) {
     // TODO: actualizarlo en la base de datos
-    return userService.update(user);
+    return roleService.update(role);
   }
 
   // Eliminar usuario
@@ -82,23 +71,7 @@ public class UserController {
   @DeleteMapping("/{id}")
   void delete(@PathVariable long id) {
     // TODO: eliminarlo de la base de datos
-    userService.delete(id);
-  }
-
-  @ResponseStatus(HttpStatus.ACCEPTED)
-  @PostMapping("/login")
-  Map<String, Object> login(@RequestBody User loggedUser) {
-    User user = userService.login(loggedUser);
-
-    Map<String, Object> result = new HashMap<>();
-
-    if(user !=null){
-      String token = jwtutil.create(String.valueOf(user.getId()), user.getEmail());
-      result.put("token", token);
-      result.put("user", user);
-    }
-    return result;
-
+    roleService.delete(id);
   }
 
 }
